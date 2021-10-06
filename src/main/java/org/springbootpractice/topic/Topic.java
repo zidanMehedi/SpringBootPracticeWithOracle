@@ -1,45 +1,30 @@
 package org.springbootpractice.topic;
 
+import lombok.*;
 import org.springbootpractice.subtopic.SubTopic;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
-public class Topic{
+public class Topic implements Serializable{
 
     @Id
+    @NonNull
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "SEQ")
     @SequenceGenerator(name = "SEQ", sequenceName = "TOPIC_SEQ")
     private int id;
+
+    @NonNull
     private String name;
 
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
-//    @JoinColumn(name = "topic_id", referencedColumnName = "id")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)               // Remove mappedBy incase of using Unidirectional Relation
+//    @JoinColumn(name = "topic_id", referencedColumnName = "id")           // Uncomment this line for Unidirectional Relation
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private List<SubTopic> subtopic;
-
-    public Topic() {
-    }
-
-    public Topic(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
