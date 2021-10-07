@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SubTopicServiceImpl implements SubTopicService {
@@ -14,26 +15,52 @@ public class SubTopicServiceImpl implements SubTopicService {
     private SubTopicRepository subTopicRepository;
 
     @Override
-    public List<SubTopic> getAllSubTopics() {
-        List<SubTopic> subTopic = new ArrayList<SubTopic>();
-        subTopicRepository.findAll().forEach(subTopic::add);
-        return subTopic;
-    }
+    public List<SubTopicDTO> getAllSubTopics() {
+        try{
+            List<SubTopicDTO> subTopic = new ArrayList<SubTopicDTO>();
+            subTopicRepository.findAll()
+                    .stream().map(this::convertEntityToDTO)
+                    .collect(Collectors.toList())
+                    .forEach(subTopic::add);
 
-    @Override
-    public SubTopic getSubTopic(int id) {
-        return subTopicRepository.findOne(id);
-    }
-
-    @Override
-    public SubTopic getSubTopicByTopic(int topicId, int id) {
-        try {
-            List<SubTopic> st = new ArrayList<SubTopic>();
-            subTopicRepository.findByTopicId(topicId).forEach(st::add);
-            return st.stream().filter(c->c.getId() == id).findFirst().get();
+            return subTopic;
         }catch(Exception e){
             return null;
         }
+    }
+
+    @Override
+    public SubTopicDTO getSubTopic(int id) {
+        try{
+            SubTopicDTO subTopicDTO = new SubTopicDTO();
+            SubTopic subTopic = new SubTopic();
+            subTopic = subTopicRepository.findOne(id);
+            subTopicDTO.setSubTopicId(subTopic.getId());
+            subTopicDTO.setSubTopicName(subTopic.getName());
+
+            return subTopicDTO;
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    @Override
+    public SubTopicDTO getSubTopicByTopic(int topicId, int id) {
+        try {
+            List<SubTopicDTO> st = new ArrayList<SubTopicDTO>();
+            subTopicRepository.findByTopicId(topicId).stream().map(this::convertEntityToDTO).forEach(st::add);
+            return st.stream().filter(c->c.getSubTopicId() == id).findFirst().get();
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    public SubTopicDTO convertEntityToDTO(SubTopic subTopic){
+        SubTopicDTO subTopicDTO = new SubTopicDTO();
+        subTopicDTO.setSubTopicId(subTopic.getId());
+        subTopicDTO.setSubTopicName(subTopic.getName());
+
+        return subTopicDTO;
     }
 
     @Override

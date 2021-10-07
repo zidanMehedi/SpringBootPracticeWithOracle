@@ -12,17 +12,17 @@ public class SubTopicController {
     private SubTopicService subTopicService;
 
     @RequestMapping("topics/subtopics")
-    public List<SubTopic> mapGetAllCourses(){
+    public List<SubTopicDTO> mapGetAllCourses(){
         return subTopicService.getAllSubTopics();
     }
 
     @RequestMapping("topics/subtopics/{id}")
-    public SubTopic mapGetCourse(@PathVariable int id){
+    public SubTopicDTO mapGetCourse(@PathVariable int id){
         return subTopicService.getSubTopic(id);
     }
 
     @RequestMapping("topics/{topicId}/subtopics/{id}")
-    public SubTopic mapGetCourse(@PathVariable int topicId, @PathVariable int id){
+    public SubTopicDTO mapGetCourse(@PathVariable int topicId, @PathVariable int id){
         return subTopicService.getSubTopicByTopic(topicId, id);
     }
 

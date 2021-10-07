@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TopicServiceImpl implements TopicService{
@@ -13,29 +14,64 @@ public class TopicServiceImpl implements TopicService{
     private TopicRepository topicRepository;
 
     @Override
-    public List<Topic> getAllTopics() {
-        List<Topic> topics = new ArrayList<Topic>();
-        topicRepository.findAll().forEach(topics::add);
-        return topics;
+    public List<TopicDTO> getAllTopics() {
+        try{
+            List<TopicDTO> topics = new ArrayList<TopicDTO>();
+            topicRepository.findAll()
+                    .stream().map(this::convertEntityToDTO)
+                    .collect(Collectors.toList())
+                    .forEach(topics::add);
+
+            return topics;
+        }catch (Exception e){
+            return null;
+        }
     }
 
     @Override
-    public Topic getTopic(int id) {
-        return topicRepository.findOne(id);
+    public TopicDTO getTopic(int id) {
+        try{
+            TopicDTO topicDTO = new TopicDTO();
+            Topic topic = new Topic();
+            topic = topicRepository.findOne(id);
+            topicDTO.setTopicId(topic.getId());
+            topicDTO.setTopicName(topic.getName());
+
+            return topicDTO;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    public TopicDTO convertEntityToDTO(Topic topic){
+        TopicDTO topicDTO = new TopicDTO();
+        topicDTO.setTopicId(topic.getId());
+        topicDTO.setTopicName(topic.getName());
+
+        return topicDTO;
     }
 
     @Override
     public void addTopic(Topic topic) {
-        topicRepository.save(topic);
+        try{topicRepository.save(topic);}
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        };
     }
 
     @Override
     public void updateTopic(Topic topic) {
-        topicRepository.save(topic);
+        try{topicRepository.save(topic);}
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
     public void deleteTopic(int id) {
-        topicRepository.delete(id);
+        try{topicRepository.delete(id);}
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 }

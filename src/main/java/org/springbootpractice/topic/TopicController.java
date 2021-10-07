@@ -12,12 +12,12 @@ public class TopicController {
     private TopicService topicService;
 
     @RequestMapping("/topics")
-    public List<Topic> mapGetAllTopics(){
+    public List<TopicDTO> mapGetAllTopics(){
         return topicService.getAllTopics();
     }
 
     @RequestMapping("/topics/{id}")
-    public Topic mapGetTopic(@PathVariable int id){
+    public TopicDTO mapGetTopic(@PathVariable int id){
         return topicService.getTopic(id);
     }
 
